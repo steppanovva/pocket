@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+                 version="3.0">
+
+    <entity class="pocket.entity.AccountEntity">
+        <table name="account" schema="public" catalog="pocket"/>
+        <attributes>
+            <id name="id">
+                <column name="id" precision="-1"/>
+            </id>
+            <basic name="name">
+                <column name="name" nullable="false" length="100"/>
+            </basic>
+            <one-to-many name="bookmarksById" mapped-by="accountEntity" target-entity="pocket.entity.BookmarkEntity"/>
+        </attributes>
+    </entity>
+</entity-mappings>
