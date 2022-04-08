@@ -1,13 +1,12 @@
 package pocket.service;
 
 import pocket.entity.BookmarkEntity;
-
-import java.util.List;
+import pocket.exception.PocketException;
 
 public interface BookmarkService {
-    BookmarkEntity add(BookmarkEntity bookmark);
-    boolean delete(BookmarkEntity bookmark);
+    BookmarkEntity add(BookmarkEntity bookmark) throws PocketException;
+    boolean delete(BookmarkEntity bookmark) throws PocketException;
+    boolean deleteAllByAccountId(int id);
+    boolean deleteAllByAccountIdAndTag(int id, String tag);
     BookmarkEntity findById(int id);
-    List<BookmarkEntity> findAllByTag(String tag);
-    List<BookmarkEntity> findAllByAccountId(int id);
 }

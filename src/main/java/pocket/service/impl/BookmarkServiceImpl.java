@@ -2,46 +2,56 @@ package pocket.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pocket.entity.AccountEntity;
 import pocket.entity.BookmarkEntity;
+import pocket.exception.PocketException;
+import pocket.repository.AccountRepository;
 import pocket.repository.BookmarkRepository;
 import pocket.service.BookmarkService;
 
-import java.util.List;
-
 @Service
 public class BookmarkServiceImpl implements BookmarkService {
-    private final BookmarkRepository repository;
+    private final BookmarkRepository bookmarkRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public BookmarkServiceImpl(BookmarkRepository repository) {
-        this.repository = repository;
+    public BookmarkServiceImpl(BookmarkRepository bookmarkRepository, AccountRepository accountRepository) {
+        this.bookmarkRepository = bookmarkRepository;
+        this.accountRepository = accountRepository;
     }
 
     @Override
-    public BookmarkEntity add(BookmarkEntity bookmark) {
-        return repository.save(bookmark);
+    public BookmarkEntity add(BookmarkEntity bookmark) throws PocketException {
+        AccountEntity account = accountRepository.findById(bookmark.getAccountId())
+                .orElseThrow(() -> new PocketException("No account with id " + bookmark.getAccountId() + " exists"));
+        account.addBookmark(bookmark);
+        return bookmarkRepository.save(bookmark);
     }
 
     @Override
-    public boolean delete(BookmarkEntity bookmark) {
+    public boolean delete(BookmarkEntity bookmark) throws PocketException {
         int id = bookmark.getId();
-        repository.delete(bookmark);
-        return !repository.existsById(id);
+        AccountEntity account = accountRepository.findById(bookmark.getAccountId())
+                .orElseThrow(() -> new PocketException("No account with id " + bookmark.getAccountId() + " exists"));
+        account.removeBookmark(bookmark);
+        bookmarkRepository.delete(bookmark);
+        return !bookmarkRepository.existsById(id);
+    }
+
+    @Override
+    public boolean deleteAllByAccountId(int id) {
+        bookmarkRepository.deleteAllByAccountId(id);
+        return bookmarkRepository.findAllByAccountId(id).isEmpty();
+    }
+
+    @Override
+    public boolean deleteAllByAccountIdAndTag(int id, String tag) {
+        bookmarkRepository.deleteAllByAccountIdAndTag(id, tag);
+        return bookmarkRepository.findAllByAccountIdAndTag(id, tag).isEmpty();
     }
 
     @Override
     public BookmarkEntity findById(int id) {
-        return repository.findById(id).orElse(null);
+        return bookmarkRepository.findById(id).orElse(null);
     }
-
-    @Override
-    public List<BookmarkEntity> findAllByTag(String tag) {
-        return repository.findAllByTag(tag);
-    }
-
-    @Override
-    public List<BookmarkEntity> findAllByAccountId(int id) {
-        return repository.findAllByAccountId(id);
-    }
-
 }

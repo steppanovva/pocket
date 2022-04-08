@@ -32,6 +32,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public boolean update(int id, AccountEntity updated) {
+        if (accountRepository.existsById(id)) {
+            updated.setId(id);
+            accountRepository.save(updated);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public AccountEntity findById(int id) {
         return accountRepository.findById(id).orElse(null);
     }
@@ -39,5 +49,15 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<BookmarkEntity> getBookmarks(int accountId) {
         return bookmarkRepository.findAllByAccountId(accountId);
+    }
+
+    @Override
+    public List<BookmarkEntity> getBookmarksFilteredByTag(int accountId, String tag) {
+        return bookmarkRepository.findAllByAccountIdAndTag(accountId, tag);
+    }
+
+    @Override
+    public List<AccountEntity> getAll() {
+        return accountRepository.findAll();
     }
 }

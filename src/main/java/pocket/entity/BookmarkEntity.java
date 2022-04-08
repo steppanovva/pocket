@@ -9,18 +9,23 @@ public class BookmarkEntity {
     @Id
     @Column(name = "id", nullable = false)
     private int id;
+
     @Basic
     @Column(name = "name", length = 30)
     private String name;
+
     @Basic
-    @Column(name = "accountId")
+    @Column(name = "accountId", insertable = false, updatable = false)
     private Integer accountId;
+
     @Basic
     @Column(name = "link", length = 100)
     private String link;
+
     @Basic
     @Column(name = "tag", length = 20)
     private String tag;
+
     @ManyToOne
     @JoinColumn(name = "accountId", referencedColumnName = "id")
     private AccountEntity accountEntity;
@@ -63,9 +68,5 @@ public class BookmarkEntity {
 
     public AccountEntity getAccountEntity() {
         return accountEntity;
-    }
-
-    public void setAccountEntity(AccountEntity accountEntity) {
-        this.accountEntity = accountEntity;
     }
 }

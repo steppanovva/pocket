@@ -8,6 +8,8 @@ import java.util.List;
 
 @Repository
 public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Integer> {
-    List<BookmarkEntity> findAllByTag(String tag);
+    List<BookmarkEntity> findAllByAccountIdAndTag(int id, String tag);
     List<BookmarkEntity> findAllByAccountId(int id);
+    void deleteAllByAccountId(int id);
+    void deleteAllByAccountIdAndTag(int id, String tag);
 }
